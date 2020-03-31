@@ -120,35 +120,32 @@ double mode(vector<double> &list) {
 }
 
 void printQuartiles(vector<double>& list) {
-    double q2 = floor(median(list));
+    double q2 = median(list);
     double q1;
     double q3;
     vector<double> lowerHalf;
     vector<double> upperHalf;
-    int halfIndex;
 
     sort(list);
 
     if (list.size() % 2 == 0) {
-        halfIndex = (list.size() / 2) - 1;
-        for (int i = 0; i < halfIndex; i++) {
+        for (int i = 0; i < list.size() / 2; i++) {
             lowerHalf.push_back(list[i]);
         }
-        for (int i = halfIndex + 2; i < list.size(); i++) {
+        for (int i = list.size() / 2; i < list.size(); i++) {
             upperHalf.push_back(list[i]);
         }
     } else {
-        halfIndex = list.size() / 2;
-        for (int i = 0; i < halfIndex; i++) {
+        for (int i = 0; i < list.size() / 2; i++) {
             lowerHalf.push_back(list[i]);
         }
-        for (int i = halfIndex + 1; i < list.size(); i++) {
+        for (int i = (list.size() / 2) + 1; i < list.size(); i++) {
             upperHalf.push_back(list[i]);
         }
     }
 
-    q1 = floor(median(lowerHalf));
-    q3 = floor(median(upperHalf));
+    q1 = median(lowerHalf);
+    q3 = median(upperHalf);
 
     cout << setprecision(0) << fixed << q1 << endl;
     cout << setprecision(0) << fixed << q2 << endl;
