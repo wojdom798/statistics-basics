@@ -44,6 +44,12 @@ int main(void) {
   cout << median(numbers) << endl;
   cout << mode(numbers) << endl;
 
+  // debug
+  // static const double lst[] = {1,1,2,5,5,5,5,5,7,8,9,9,30,100,100,100,100,100,100,100};
+  // vector<double> v(lst, lst + sizeof(lst) / sizeof(lst[0]));
+  // printList(v);
+  // cout << "mode: " << mode(v) << endl;
+
   return 0;
 }
 
@@ -69,33 +75,40 @@ double median(vector<double> &list) {
 double mode(vector<double> &list) {
   int count = 1;
   double current = list[0];
-  vector<int> countSet;
-  int maxId = 0;
-  int modeIndex = 0;
+  vector<vector<double>*> countSet;
   int i;
+  int maxId = 0;
 
-  for (i = 0; i < list.size(); i++) {
+  for (i = 1; i < list.size(); i++) {
     if (list[i] == current) {
       count++;
-    }
-    else {
-      countSet.push_back(count);
-      count = 1;
+    } else {
+      vector<double>* tmp = new vector<double>(2);
+      tmp->at(0) = current;
+      tmp->at(1) = (double) count;
+      countSet.push_back(tmp);
       current = list[i];
+      count = 1;
     }
   }
+  // last element(s)
+  vector<double>* tmp = new vector<double>(2);
+  tmp->at(0) = current;
+  tmp->at(1) = (double) count;
+  countSet.push_back(tmp);
 
-  for (i = 0; i < countSet.size(); i++) {
-    if (countSet[i] > countSet[maxId]) {
+  // debug
+  // for (i = 0; i < countSet.size(); i++) {
+  //   cout << "item: " << countSet[i]->at(0) << ", count: " << countSet[i]->at(1) << endl;
+  // }
+
+  for (i = 1; i < countSet.size(); i++) {
+    if (countSet[maxId]->at(1) < countSet[i]->at(1)) {
       maxId = i;
     }
   }
 
-  for (i = 0; i < maxId; i++) {
-    modeIndex += countSet[i];
-  }
-
-  return list[modeIndex];
+  return countSet[maxId]->at(0);
 }
 
 void sort(vector<double> &list)
