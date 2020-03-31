@@ -3,13 +3,14 @@
 #include <vector>
 #include <iostream>
 #include <algorithm>
-
+#include <iomanip>
 #include <fstream>
 using namespace std;
 
 double mean(vector<double> &list);
 double median(vector<double> &list);
 double mode(vector<double> &list);
+void printQuartiles(vector<double>& list);
 void sort(vector<double> &list);
 void printList(vector<double> &list);
 
@@ -44,11 +45,18 @@ int main(void) {
   cout << median(numbers) << endl;
   cout << mode(numbers) << endl;
 
-  // debug
+  // debug - mode
   // static const double lst[] = {1,1,2,5,5,5,5,5,7,8,9,9,30,100,100,100,100,100,100,100};
   // vector<double> v(lst, lst + sizeof(lst) / sizeof(lst[0]));
   // printList(v);
   // cout << "mode: " << mode(v) << endl;
+
+  // debug - quartiles
+  static const double lst[] = {4, 17, 7, 14, 18, 12, 3, 16, 10, 4, 4, 12};
+  vector<double> v(lst, lst + sizeof(lst) / sizeof(lst[0]));
+  sort(v);
+  printList(v);
+  printQuartiles(v);
 
   return 0;
 }
@@ -109,6 +117,42 @@ double mode(vector<double> &list) {
   }
 
   return countSet[maxId]->at(0);
+}
+
+void printQuartiles(vector<double>& list) {
+    double q2 = floor(median(list));
+    double q1;
+    double q3;
+    vector<double> lowerHalf;
+    vector<double> upperHalf;
+    int halfIndex;
+
+    sort(list);
+
+    if (list.size() % 2 == 0) {
+        halfIndex = (list.size() / 2) - 1;
+        for (int i = 0; i < halfIndex; i++) {
+            lowerHalf.push_back(list[i]);
+        }
+        for (int i = halfIndex + 2; i < list.size(); i++) {
+            upperHalf.push_back(list[i]);
+        }
+    } else {
+        halfIndex = list.size() / 2;
+        for (int i = 0; i < halfIndex; i++) {
+            lowerHalf.push_back(list[i]);
+        }
+        for (int i = halfIndex + 1; i < list.size(); i++) {
+            upperHalf.push_back(list[i]);
+        }
+    }
+
+    q1 = floor(median(lowerHalf));
+    q3 = floor(median(upperHalf));
+
+    cout << setprecision(0) << fixed << q1 << endl;
+    cout << setprecision(0) << fixed << q2 << endl;
+    cout << setprecision(0) << fixed << q3 << endl;
 }
 
 void sort(vector<double> &list)
