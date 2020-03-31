@@ -11,8 +11,10 @@ double mean(vector<double> &list);
 double median(vector<double> &list);
 double mode(vector<double> &list);
 void printQuartiles(vector<double>& list);
+vector<double>* getQuartiles(vector<double>& list);
 void sort(vector<double> &list);
 void printList(vector<double> &list);
+
 
 int main(void) {
   string filePath = "..\\input04.txt";
@@ -58,6 +60,27 @@ int main(void) {
   printList(v);
   printQuartiles(v);
 
+  cout << "Interquartile range: ";
+  static const double num_list[] = {6, 12, 8, 10, 20, 16};
+  static const double freq_list[] = {5, 4, 3, 2, 1, 5};
+  vector<double> num(num_list, num_list + sizeof(num_list) / sizeof(num_list[0]));
+  vector<double> freq(freq_list, freq_list + sizeof(freq_list) / sizeof(freq_list[0]));
+  vector<double> dataSet;
+  vector<double>* quartiles;
+
+  n = num.size();
+
+  for (int i = 0; i < n; i++) {
+    for (int j = 0; j < freq[i]; j++) {
+      dataSet.push_back(num[i]);
+    }
+  }
+
+  quartiles = getQuartiles(dataSet);
+  cout << setprecision(1) << fixed << quartiles->at(2) - quartiles->at(0) << endl;
+
+
+
   return 0;
 }
 
@@ -70,7 +93,7 @@ double mean(vector<double> &list) {
 }
 
 double median(vector<double> &list) {
-  sort(list);
+  // sort(list);
   int index;
   if (list.size() % 2 == 0) {
     index = list.size() / 2;
@@ -150,6 +173,48 @@ void printQuartiles(vector<double>& list) {
     cout << setprecision(0) << fixed << q1 << endl;
     cout << setprecision(0) << fixed << q2 << endl;
     cout << setprecision(0) << fixed << q3 << endl;
+}
+
+vector<double>* getQuartiles(vector<double>& list) {
+    double q2 = median(list);
+    double q1;
+    double q3;
+    vector<double> lowerHalf;
+    vector<double> upperHalf;
+    // bug - setting initial size to 3 and then pushing back
+    // other 3 values makes total size of 6
+    // vector<double>* quartiles = new vector<double>(3);
+    vector<double>* quartiles = new vector<double>();
+
+    sort(list);
+
+    if (list.size() % 2 == 0) {
+        for (int i = 0; i < list.size() / 2; i++) {
+            lowerHalf.push_back(list[i]);
+        }
+        for (int i = list.size() / 2; i < list.size(); i++) {
+            upperHalf.push_back(list[i]);
+        }
+    } else {
+        for (int i = 0; i < list.size() / 2; i++) {
+            lowerHalf.push_back(list[i]);
+        }
+        for (int i = (list.size() / 2) + 1; i < list.size(); i++) {
+            upperHalf.push_back(list[i]);
+        }
+    }
+
+    q1 = median(lowerHalf);
+    q3 = median(upperHalf);
+
+    //debug
+    // cout << "q1: " << q1 << " q2: " << q2 << " q3: " << q3 << endl;
+
+    quartiles->push_back(q1);
+    quartiles->push_back(q2);
+    quartiles->push_back(q3);
+
+    return quartiles;
 }
 
 void sort(vector<double> &list)
